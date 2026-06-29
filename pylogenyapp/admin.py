@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
-from pylogenyapp.models import TaxonomicRank, Taxon
+from pylogenyapp.models import TaxonomicRank, Taxon, NameAuthorship
 
 
 @admin.register(TaxonomicRank)
@@ -20,6 +20,26 @@ class TaxonomicRankAdmin(admin.ModelAdmin):
                 "fields": ("name_cs", "code", "level"),
             },
         ),
+    )
+
+@admin.register(NameAuthorship)
+class NameAuthorshipAdmin(admin.ModelAdmin):
+    list_display = (
+        "text",
+        "year",
+    )
+
+    search_fields = (
+        "text",
+    )
+
+    list_filter = (
+        "year",
+    )
+
+    ordering = (
+        "text",
+        "year",
     )
 
 @admin.register(Taxon)
@@ -60,6 +80,7 @@ class TaxonAdmin(DraggableMPTTAdmin):
                     "parent",
                     "taxonomic_rank",
                     "scientific_name",
+                    "authorship",
                     "name_cs",
                 ),
             },
