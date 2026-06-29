@@ -31,6 +31,34 @@ class TaxonomicRank(models.Model):
         return self.code
 
 
+class NameAuthorship(models.Model):
+    text = models.CharField(
+        _("name authorship"),
+        max_length=255,
+        unique=True,
+    )
+
+    year = models.PositiveSmallIntegerField(
+        _("year of publication"),
+        null=True,
+        blank=True,
+    )
+
+    note = models.TextField(
+        _("note"),
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _("name authorship")
+        verbose_name_plural = _("name authorships")
+        ordering = ["text", "year"]
+
+    def __str__(self):
+        if self.year:
+            return f"{self.text}, {self.year}"
+        return self.text
+
 class Taxon(MPTTModel):
     name_cs = models.CharField(
         max_length=255,
@@ -46,6 +74,16 @@ class Taxon(MPTTModel):
         related_name="taxa",
         verbose_name=_("Taxonomic rank"),
     )
+
+    authorship = models.ForeignKey(
+        NameAuthorship,
+        verbose_name=_("name authorship"),
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="taxa",
+    )
+
     parent = TreeForeignKey(
         "self",
         on_delete=models.CASCADE,

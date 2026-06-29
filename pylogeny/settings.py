@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'leaflet',
     'mptt',
-    'pylogenyapp'
+    'pylogenyapp',
+    'florapy'
 ]
 
 MIDDLEWARE = [
@@ -77,11 +79,17 @@ WSGI_APPLICATION = 'pylogeny.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        "ENGINE": "django.contrib.gis.db.backends.spatialite",
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": config("DB_ENGINE"),
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST", default="127.0.0.1"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
+
+
 
 
 # Password validation
@@ -119,3 +127,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+LEAFLET_CONFIG = {
+    "DEFAULT_CENTER": (49.8175, 15.4730),
+    "DEFAULT_ZOOM": 7,
+    "MIN_ZOOM": 3,
+    "MAX_ZOOM": 18,
+    "TILES": [
+        (
+            "CartoDB Positron",
+            "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+            {
+                "attribution": '&copy; OpenStreetMap contributors &copy; CARTO',
+                "subdomains": "abcd",
+                "maxZoom": 19,
+            },
+        ),
+    ],
+}
