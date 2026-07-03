@@ -4,7 +4,35 @@ from django.contrib import admin
 
 from pylogenyapp.models import TaxonomicRank
 
-from .models import Locality, LocalityVisit
+from .models import Locality, LocalityVisit, Project
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = (
+        "project_name",
+        "year",
+        "localities_count",
+    )
+    search_fields = (
+        "project_name",
+        "description",
+    )
+    list_filter = (
+        "year",
+    )
+    ordering = (
+        "project_name",
+    )
+    fields = (
+        "project_name",
+        "description",
+        "year",
+    )
+
+    @admin.display(description="Localities count")
+    def localities_count(self, obj):
+        return obj.localities.count()
 
 
 class TaxonomicRankFilter(admin.SimpleListFilter):
