@@ -3,6 +3,60 @@ from django.utils.translation import gettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+
+class EllenbergIndicatorValue(models.Model):
+    light = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Light"),
+        help_text=_("L: Indicator values for light"),
+    )
+    temperature = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Temperature"),
+        help_text=_("T: Indicator values for temperature"),
+    )
+    moisture = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Moisture"),
+        help_text=_("M: Indicator values for moisture"),
+    )
+    reaction = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Reaction"),
+        help_text=_("R: Indicator values for reaction"),
+    )
+    nutrients = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Nutrients"),
+        help_text=_("N: Indicator values for nutrients"),
+    )
+    salinity = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Salinity"),
+        help_text=_("S: Indicator values for salinity"),
+    )
+
+    class Meta:
+        verbose_name = _("Ellenberg indicator value")
+        verbose_name_plural = _("Ellenberg indicator values")
+
+    def __str__(self):
+        return (
+            f"{self.taxon.scientific_name}: "
+            f"L: {self.light}, "
+            f"T: {self.temperature}, "
+            f"M: {self.moisture}, "
+            f"R: {self.reaction}, "
+            f"N: {self.nutrients}, "
+            f"S: {self.salinity}"
+        )
+
 class CzechTaxonOrigin(models.Model):
     origin = models.CharField(
         max_length=255,
@@ -168,6 +222,12 @@ class Taxon(MPTTModel):
     czech_legal_protection = models.ForeignKey(CzechLegalProtection, null=True, blank=True, on_delete=models.PROTECT)
     czech_taxon_origin = models.ForeignKey(CzechTaxonOrigin, null=True, blank=True, on_delete=models.PROTECT)
     invasive_status = models.ForeignKey(InvasiveStatus, null=True, blank=True, on_delete=models.PROTECT)
+    ellenberg_indicator_values = models.OneToOneField(
+        EllenbergIndicatorValue,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
 
     def save(self, *args, **kwargs):
         if self.name_cs:
