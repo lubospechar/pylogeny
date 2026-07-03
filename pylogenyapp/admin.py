@@ -2,8 +2,63 @@ from django.contrib import admin
 from django.utils.html import format_html
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
-from pylogenyapp.models import TaxonomicRank, Taxon, NameAuthorship
+from pylogenyapp.models import TaxonomicRank, Taxon, NameAuthorship, CzechRedList, CzechLegalProtection, \
+    CzechTaxonOrigin, InvasiveStatus
 
+
+@admin.register(CzechTaxonOrigin)
+class CzechTaxonOriginAdmin(admin.ModelAdmin):
+    list_display = (
+        "origin",
+    )
+    search_fields = (
+        "origin",
+    )
+    ordering = (
+        "origin",
+    )
+
+
+@admin.register(InvasiveStatus)
+class InvasiveStatusAdmin(admin.ModelAdmin):
+    list_display = (
+        "status",
+    )
+    search_fields = (
+        "status",
+    )
+    ordering = (
+        "status",
+    )
+
+
+@admin.register(CzechLegalProtection)
+class CzechLegalProtectionAdmin(admin.ModelAdmin):
+    list_display = (
+        "paragraph",
+        "description",
+    )
+    search_fields = (
+        "paragraph",
+        "description",
+    )
+    ordering = (
+        "paragraph",
+    )
+
+@admin.register(CzechRedList)
+class CzechRedListAdmin(admin.ModelAdmin):
+    list_display = (
+        "code",
+        "description",
+    )
+    search_fields = (
+        "code",
+        "description",
+    )
+    ordering = (
+        "code",
+    )
 
 @admin.register(TaxonomicRank)
 class TaxonomicRankAdmin(admin.ModelAdmin):
@@ -51,6 +106,9 @@ class TaxonAdmin(DraggableMPTTAdmin):
         "indented_title",
         "name_cs",
         "taxonomic_rank",
+        "authorship",
+        "czech_red_list",
+        "czech_legal_protection",
     )
     list_display_links = (
         "indented_title",
@@ -66,6 +124,8 @@ class TaxonAdmin(DraggableMPTTAdmin):
 
     list_filter = (
         "taxonomic_rank",
+        "czech_red_list",
+        "czech_legal_protection",
     )
     ordering = (
         "tree_id",

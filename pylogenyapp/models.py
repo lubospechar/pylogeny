@@ -3,6 +3,77 @@ from django.utils.translation import gettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+class CzechTaxonOrigin(models.Model):
+    origin = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("Origin"),
+    )
+
+    class Meta:
+        verbose_name = _("Taxon origin in Czechia")
+        verbose_name_plural = _("Taxon origins in Czechia")
+        ordering = ["origin"]
+
+    def __str__(self):
+        return self.origin
+
+
+class InvasiveStatus(models.Model):
+    status = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("Status"),
+    )
+
+    class Meta:
+        verbose_name = _("Invasive status")
+        verbose_name_plural = _("Invasive statuses")
+        ordering = ["status"]
+
+    def __str__(self):
+        return self.status
+
+
+class CzechRedList(models.Model):
+    code = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name=_("Code"),
+    )
+    description = models.CharField(
+        max_length=255,
+        verbose_name=_("Description"),
+    )
+
+    class Meta:
+        verbose_name = _("Czech red list")
+        verbose_name_plural = _("Czech red lists")
+        ordering = ["code"]
+
+    def __str__(self):
+        return self.code
+
+class CzechLegalProtection(models.Model):
+    paragraph = models.CharField(
+        _("paragraph"),
+        max_length=10,
+        unique=True,
+        help_text=_("Legal protection category paragraph, e.g. §1, §2, §3."),
+    )
+    description = models.CharField(
+        _("description"),
+        max_length=255,
+        help_text=_("Description of the legal protection category."),
+    )
+
+    class Meta:
+        verbose_name = _("Czech legal protection category")
+        verbose_name_plural = _("Czech legal protection categories")
+        ordering = ["paragraph"]
+
+    def __str__(self):
+        return self.paragraph
 
 class TaxonomicRank(models.Model):
     name_cs = models.CharField(
@@ -93,6 +164,11 @@ class Taxon(MPTTModel):
         verbose_name=_("Parent taxon"),
     )
 
+    czech_red_list = models.ForeignKey(CzechRedList, null=True, blank=True, on_delete=models.PROTECT)
+    czech_legal_protection = models.ForeignKey(CzechLegalProtection, null=True, blank=True, on_delete=models.PROTECT)
+    czech_taxon_origin = models.ForeignKey(CzechTaxonOrigin, null=True, blank=True, on_delete=models.PROTECT)
+    invasive_status = models.ForeignKey(InvasiveStatus, null=True, blank=True, on_delete=models.PROTECT)
+
     def save(self, *args, **kwargs):
         if self.name_cs:
             self.name_cs = self.name_cs.lower()
@@ -101,6 +177,8 @@ class Taxon(MPTTModel):
     def __str__(self):
         return f'{self.scientific_name} ({self.taxonomic_rank}), {self.name_cs}'
 
+    def formatted_name(self):
+        return f"<i>{self.scientific_name}</i>, {self.name_cs}"
 
     class MPTTMeta:
         order_insertion_by = ["scientific_name"]
@@ -115,3 +193,4 @@ class Taxon(MPTTModel):
                 name="unique_taxon_scientific_name_rank_parent",
             ),
         ]
+
