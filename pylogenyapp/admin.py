@@ -109,6 +109,8 @@ class TaxonAdmin(DraggableMPTTAdmin):
         "authorship",
         "czech_red_list",
         "czech_legal_protection",
+        "czech_taxon_origin",
+        "invasive_status",
     )
     list_display_links = (
         "indented_title",
