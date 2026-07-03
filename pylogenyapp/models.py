@@ -35,7 +35,6 @@ class NameAuthorship(models.Model):
     text = models.CharField(
         _("name authorship"),
         max_length=255,
-        unique=True,
     )
 
     year = models.PositiveSmallIntegerField(
@@ -53,6 +52,7 @@ class NameAuthorship(models.Model):
         verbose_name = _("name authorship")
         verbose_name_plural = _("name authorships")
         ordering = ["text", "year"]
+        unique_together = ("text", "year")
 
     def __str__(self):
         if self.year:
@@ -99,7 +99,7 @@ class Taxon(MPTTModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.scientific_name} ({self.taxonomic_rank})'
+        return f'{self.scientific_name} ({self.taxonomic_rank}), {self.name_cs}'
 
 
     class MPTTMeta:
