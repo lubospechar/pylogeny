@@ -85,6 +85,18 @@ class Command(BaseCommand):
         )
         row.addElement(cell)
 
+    def add_italic_text_cell(self, row, text, italic_style):
+        cell = TableCell()
+        paragraph = P()
+        paragraph.addElement(
+            Span(
+                stylename=italic_style,
+                text=text or "",
+            )
+        )
+        cell.addElement(paragraph)
+        row.addElement(cell)
+
     def handle(self, *args, **options):
         locality_id = options["locality_id"]
 
@@ -177,7 +189,7 @@ class Command(BaseCommand):
         for family_name, taxon in taxa_with_family:
             row = TableRow()
 
-            self.add_text_cell(row, family_name)
+            self.add_italic_text_cell(row, family_name, italic_style)
 
             scientific_cell = TableCell()
             scientific_paragraph = P()
@@ -189,7 +201,7 @@ class Command(BaseCommand):
             )
 
             if taxon.authorship:
-                scientific_paragraph.addText(f" {taxon.authorship.text}")
+                scientific_paragraph.addText(f", {taxon.authorship.text}")
 
             scientific_cell.addElement(scientific_paragraph)
             row.addElement(scientific_cell)
