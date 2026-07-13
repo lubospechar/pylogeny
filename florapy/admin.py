@@ -56,7 +56,7 @@ class TaxonomicRankFilter(admin.SimpleListFilter):
 @admin.register(Locality)
 class LocalityAdmin(LeafletGeoAdmin):
     list_display = (
-        "name",
+        "name", "project",
     )
     search_fields = (
         "name",
@@ -65,6 +65,7 @@ class LocalityAdmin(LeafletGeoAdmin):
         "name",
     )
     fields = (
+        "project",
         "name",
         "polygon",
     )

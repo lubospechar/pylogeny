@@ -41,18 +41,6 @@ class Command(BaseCommand):
                     )
                 )
 
-    def get_family_name(self, taxon):
-        family = taxon.get_ancestors(
-            include_self=True,
-        ).filter(
-            taxonomic_rank__code="family",
-        ).first()
-
-        if family is None:
-            return ""
-
-        return family.scientific_name
-
     def get_output_path(self, locality, output_path):
         if output_path:
             return output_path
@@ -85,18 +73,6 @@ class Command(BaseCommand):
         )
         row.addElement(cell)
 
-    def add_italic_text_cell(self, row, text, italic_style):
-        cell = TableCell()
-        paragraph = P()
-        paragraph.addElement(
-            Span(
-                stylename=italic_style,
-                text=text or "",
-            )
-        )
-        cell.addElement(paragraph)
-        row.addElement(cell)
-
     def handle(self, *args, **options):
         locality_id = options["locality_id"]
 
@@ -125,22 +101,9 @@ class Command(BaseCommand):
             "invasive_status",
         ).distinct()
 
-        taxa_with_family = []
-
-        for taxon in taxa:
-            family_name = self.get_family_name(taxon)
-            taxa_with_family.append(
-                (
-                    family_name,
-                    taxon,
-                )
-            )
-
-        taxa_with_family.sort(
-            key=lambda item: (
-                item[0].lower(),
-                item[1].scientific_name.lower(),
-            )
+        taxa = sorted(
+            taxa,
+            key=lambda taxon: taxon.scientific_name.lower(),
         )
 
         document = OpenDocumentText()
@@ -174,10 +137,8 @@ class Command(BaseCommand):
         table.addElement(TableColumn())
         table.addElement(TableColumn())
         table.addElement(TableColumn())
-        table.addElement(TableColumn())
 
         header_row = TableRow()
-        self.add_header_cell(header_row, "Čeleď", bold_style)
         self.add_header_cell(header_row, "Vědecké jméno", bold_style)
         self.add_header_cell(header_row, "České jméno", bold_style)
         self.add_header_cell(header_row, "Červený seznam", bold_style)
@@ -186,10 +147,8 @@ class Command(BaseCommand):
         self.add_header_cell(header_row, "Invazní status", bold_style)
         table.addElement(header_row)
 
-        for family_name, taxon in taxa_with_family:
+        for taxon in taxa:
             row = TableRow()
-
-            self.add_italic_text_cell(row, family_name, italic_style)
 
             scientific_cell = TableCell()
             scientific_paragraph = P()
@@ -236,7 +195,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Created {output_path} with {taxa.count()} taxa "
+                f"Created {output_path} with {len(taxa)} taxa "
                 f"for locality {locality.id}: {locality.name}."
             )
         )
