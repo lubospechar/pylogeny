@@ -68,8 +68,12 @@ class LocalityAdmin(LeafletGeoAdmin):
         "project",
         "name",
         "polygon",
+        "polygon_description",
         "reference_point",
         "reference_point_description",
+        "geographical_location_description",
+        "ecological_indicator_assessment",
+        "conservation_issues"
   )
 
 

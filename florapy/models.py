@@ -61,8 +61,8 @@ class Locality(models.Model):
         blank=True,
     )
 
-    habitat_description = models.TextField(
-        verbose_name="Habitat description",
+    ecological_indicator_assessment = models.TextField(
+        verbose_name="Ecological indicator assessment",
         blank=True,
     )
 
@@ -71,10 +71,6 @@ class Locality(models.Model):
         blank=True,
     )
 
-    ecological_indicator_assessment = models.TextField(
-        verbose_name="Ecological indicator assessment",
-        blank=True,
-    )
 
     def distance_centroid_to_reference_point_m(self):
         if not self.polygon or not self.reference_point:
