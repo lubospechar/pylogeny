@@ -36,6 +36,27 @@ class Locality(models.Model):
         verbose_name="Polygon",
     )
 
+    geographical_location_description = models.TextField(
+        verbose_name="Geographical location description",
+        blank=True,
+    )
+
+    habitat_description = models.TextField(
+        verbose_name="Habitat description",
+        blank=True,
+    )
+
+    conservation_issues = models.TextField(
+        verbose_name="Conservation issues",
+        blank=True,
+    )
+
+    ecological_indicator_assessment = models.TextField(
+        verbose_name="Ecological indicator assessment",
+        blank=True,
+    )
+
+
     class Meta:
         verbose_name = "Locality"
         verbose_name_plural = "Localities"
