@@ -37,6 +37,13 @@ class Locality(models.Model):
         verbose_name="Polygon",
     )
 
+    polygon_description = models.CharField(
+        max_length=255,
+        verbose_name=_("Polygon description"),
+        blank=True,
+        null=True,
+    )
+
     reference_point = models.PointField(
         verbose_name=_("Reference point"),
         null=True,
