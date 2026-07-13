@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'leaflet',
     'mptt',
     'pylogenyapp',
-    'florapy'
+    'florapy',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
