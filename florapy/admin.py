@@ -68,7 +68,9 @@ class LocalityAdmin(LeafletGeoAdmin):
         "project",
         "name",
         "polygon",
-    )
+        "reference_point",
+        "reference_point_description",
+  )
 
 
 @admin.register(LocalityVisit)
