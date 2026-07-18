@@ -3,9 +3,9 @@ from leaflet.admin import LeafletGeoAdmin
 from django.contrib import admin
 
 from pylogenyapp.models import TaxonomicRank
-
+from florapy.models import Taxon
 from .models import Locality, LocalityVisit, Project
-
+LOCALITY_VISIT_TAXA_ROOT_ID = 8
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -126,6 +126,23 @@ class LocalityVisitAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "taxa":
+            root_taxon = Taxon.objects.filter(
+                pk=LOCALITY_VISIT_TAXA_ROOT_ID,
+            ).first()
+
+            if root_taxon is not None:
+                kwargs["queryset"] = root_taxon.get_descendants(
+                    include_self=False,
+                )
+
+        return super().formfield_for_manytomany(
+            db_field,
+            request,
+            **kwargs,
+        )
 
     @admin.display(description="Taxa count")
     def taxa_count(self, obj):

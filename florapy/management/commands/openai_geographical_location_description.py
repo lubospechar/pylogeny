@@ -59,7 +59,7 @@ class Command(BaseCommand):
             raise CommandError(f"OpenAI API error: {error}") from error
 
         locality.geographical_location_description = f'GENEROVÁNO AI: {response.output_text}'
-
+        locality.save()
         self.stdout.write(
             self.style.SUCCESS(
                 f"Geographical location description was generated and saved "
